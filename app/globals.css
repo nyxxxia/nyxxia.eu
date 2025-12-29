@@ -5,6 +5,7 @@
   --foreground: #c9d1d9;
   --terminal-warn: #d7c46f;
   --terminal-error: #ff7b72;
+  --boot-line-height: 21px;
 }
 
 @theme inline {
@@ -27,10 +28,13 @@ body {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, "Liberation Mono", "Courier New", monospace;
   margin: 0;
+  overflow: hidden;
 }
 
 .boot-screen {
-  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
   background: radial-gradient(
         circle at 20% 20%,
         rgba(60, 128, 82, 0.08),
@@ -48,11 +52,13 @@ body {
   max-width: 1100px;
   width: min(1100px, 92vw);
   margin: 0 clamp(12px, 6vw, 160px) 0 auto;
+  height: 100%;
+  overflow: hidden;
 }
 
 .boot-line {
   font-size: 15px;
-  line-height: 1.42;
+  line-height: var(--boot-line-height);
   color: var(--foreground);
   text-shadow: 0 0 18px rgba(0, 255, 153, 0.06);
 }

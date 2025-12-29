@@ -140,13 +140,26 @@ const randomJitter = () => Math.random() * 80;
 
 export default function Home() {
   const [lines, setLines] = useState<BootLine[]>([]);
+  const [maxLines, setMaxLines] = useState<number>(MAX_VISIBLE_LINES);
   const timers = useRef<number[]>([]);
   const started = useRef(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const computeDelay = (line: BootLine) => {
     if (line.delay !== undefined) return line.delay;
     const base = Math.min(520, Math.max(40, line.text.length * 3.4));
     return base + randomJitter();
+  };
+
+  const measureMaxLines = () => {
+    const container = containerRef.current;
+    if (!container) return MAX_VISIBLE_LINES;
+    const rootStyles = getComputedStyle(document.documentElement);
+    const lineHeight =
+      parseFloat(rootStyles.getPropertyValue("--boot-line-height")) || 21;
+    const available = container.clientHeight || window.innerHeight;
+    const allowed = Math.max(10, Math.floor(available / lineHeight) - 1);
+    return Math.min(MAX_VISIBLE_LINES, allowed);
   };
 
   useEffect(() => {
@@ -160,8 +173,8 @@ export default function Home() {
       const entry = BOOT_SEQUENCE[index];
       setLines((prev) => {
         const next = [...prev, entry];
-        if (next.length > MAX_VISIBLE_LINES) {
-          return next.slice(next.length - MAX_VISIBLE_LINES);
+        if (next.length > maxLines) {
+          return next.slice(next.length - maxLines);
         }
         return next;
       });
@@ -184,11 +197,32 @@ export default function Home() {
       timers.current.forEach((id) => clearTimeout(id));
       timers.current = [];
     };
+  }, [maxLines]);
+
+  useEffect(() => {
+    const updateMax = () => setMaxLines(measureMaxLines());
+    updateMax();
+    window.addEventListener("resize", updateMax);
+    return () => window.removeEventListener("resize", updateMax);
   }, []);
+
+  useEffect(() => {
+    setLines((prev) => {
+      if (prev.length <= maxLines) return prev;
+      return prev.slice(prev.length - maxLines);
+    });
+  }, [maxLines]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (container.scrollHeight <= container.clientHeight) return;
+    setLines((prev) => (prev.length ? prev.slice(1) : prev));
+  }, [lines]);
 
   return (
     <main className="boot-screen">
-      <div className="boot-container">
+      <div className="boot-container" ref={containerRef}>
         {lines.map((line, index) => (
           <div
             key={`${line.text}-${index}`}
