@@ -135,7 +135,8 @@ const BOOT_SEQUENCE: BootLine[] = [
   { text: "root@nyxxia:~#", tone: "info", delay: 0 },
 ];
 
-const randomJitter = () => Math.random() * 120;
+const MAX_VISIBLE_LINES = 30;
+const randomJitter = () => Math.random() * 80;
 
 export default function Home() {
   const [lines, setLines] = useState<BootLine[]>([]);
@@ -144,7 +145,7 @@ export default function Home() {
 
   const computeDelay = (line: BootLine) => {
     if (line.delay !== undefined) return line.delay;
-    const base = Math.min(780, Math.max(70, line.text.length * 5.5));
+    const base = Math.min(520, Math.max(40, line.text.length * 3.4));
     return base + randomJitter();
   };
 
@@ -157,7 +158,13 @@ export default function Home() {
     const queueNext = (index: number) => {
       if (cancelled) return;
       const entry = BOOT_SEQUENCE[index];
-      setLines((prev) => [...prev, entry]);
+      setLines((prev) => {
+        const next = [...prev, entry];
+        if (next.length > MAX_VISIBLE_LINES) {
+          return next.slice(next.length - MAX_VISIBLE_LINES);
+        }
+        return next;
+      });
 
       const nextIndex = index + 1;
       if (nextIndex >= BOOT_SEQUENCE.length) return;
@@ -169,7 +176,7 @@ export default function Home() {
       timers.current.push(timer);
     };
 
-    const firstTimer = window.setTimeout(() => queueNext(0), 320);
+    const firstTimer = window.setTimeout(() => queueNext(0), 160);
     timers.current.push(firstTimer);
 
     return () => {

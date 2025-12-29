@@ -46,7 +46,8 @@ body {
 
 .boot-container {
   max-width: 1100px;
-  margin: 0 auto;
+  width: min(1100px, 92vw);
+  margin: 0 clamp(12px, 6vw, 160px) 0 auto;
 }
 
 .boot-line {
