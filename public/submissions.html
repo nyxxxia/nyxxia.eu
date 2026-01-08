@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inquiry Submissions</title>
+  </head>
+  <body>
+    <h1>Inquiry Submissions</h1>
+    <p id="status-message" role="status" aria-live="polite"></p>
+    <p id="empty-message">No submissions yet.</p>
+    <ol id="submission-list"></ol>
+    <p><a href="/inquiry.html">Back to inquiry</a></p>
+
+    <script>
+      (() => {
+        const list = document.getElementById("submission-list");
+        const emptyMessage = document.getElementById("empty-message");
+        const statusMessage = document.getElementById("status-message");
+
+        const renderItems = (items) => {
+          if (!items.length) {
+            emptyMessage.style.display = "block";
+            return;
+          }
+
+          emptyMessage.style.display = "none";
+          items.forEach((entry, index) => {
+            const item = document.createElement("li");
+            const user = entry && entry.user ? entry.user : "Unknown";
+            const inquiry = entry && entry.inquiry ? entry.inquiry : "";
+            item.textContent = `${index + 1}. ${user} — ${inquiry}`;
+            list.appendChild(item);
+          });
+        };
+
+        const loadSubmissions = async () => {
+          statusMessage.textContent = "Loading submissions...";
+
+          try {
+            const response = await fetch("/api/inquiries", {
+              cache: "no-store",
+            });
+            const payload = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+              const errorText =
+                payload && payload.error
+                  ? payload.error
+                  : "Could not load submissions.";
+              statusMessage.textContent = errorText;
+              return;
+            }
+
+            const items = Array.isArray(payload.items) ? payload.items : [];
+            statusMessage.textContent = "";
+            renderItems(items);
+          } catch (error) {
+            statusMessage.textContent = "Network error. Please try again.";
+          }
+        };
+
+        loadSubmissions();
+      })();
+    </script>
+  </body>
+</html>

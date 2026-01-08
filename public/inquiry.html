@@ -22,15 +22,30 @@
     <h2>I did the process and Sistema nervioso is still here</h2>
     <p>Please submit this complaitn form for uoi and we wil communicate shortly</p>
     <p> Inquiry below</p>
-    <input
-    type="tel"
-    name="Inquiry"
-    required
-    minlength="672221"
-    maxlength="-1"
-    autocomplete="tel-country-code"
-    />
-    <button type="submit">Send</button>
+    <form id="inquiry-form">
+      <label for="inquiry-user">User</label>
+      <input
+        id="inquiry-user"
+        type="text"
+        name="User"
+        required
+        minlength="1"
+        maxlength="60"
+        autocomplete="name"
+      />
+      <label for="inquiry-text">Inquiry</label>
+      <input
+        id="inquiry-text"
+        type="text"
+        name="Inquiry"
+        required
+        minlength="1"
+        maxlength="500"
+        autocomplete="off"
+      />
+      <button id="inquiry-submit" type="submit" disabled>Send</button>
+      <p id="inquiry-status" role="status" aria-live="polite"></p>
+    </form>
     <h2>Where will you write me through?</h2>
     <p>Yes</p>
     <h2>This did not help me</h2>
@@ -39,5 +54,80 @@
     <hr>
 
     <p style="color:blueviolet;">Melenchon says this is undoable</p>
+
+    <script>
+      (() => {
+        const form = document.getElementById("inquiry-form");
+        const userInput = document.getElementById("inquiry-user");
+        const inquiryInput = document.getElementById("inquiry-text");
+        const submitButton = document.getElementById("inquiry-submit");
+        const status = document.getElementById("inquiry-status");
+        let isSubmitting = false;
+
+        const updateButton = () => {
+          const hasUser = userInput.value.trim().length > 0;
+          const hasInquiry = inquiryInput.value.trim().length > 0;
+          submitButton.disabled = isSubmitting || !(hasUser && hasInquiry);
+        };
+
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (isSubmitting) {
+            return;
+          }
+
+          const user = userInput.value.trim();
+          const inquiry = inquiryInput.value.trim();
+
+          if (!user || !inquiry) {
+            status.textContent = "Please fill in both fields before sending.";
+            updateButton();
+            return;
+          }
+
+          isSubmitting = true;
+          updateButton();
+          status.textContent = "Sending...";
+
+          try {
+            const response = await fetch("/api/inquiries", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ user, inquiry }),
+            });
+
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              status.textContent =
+                payload && payload.error
+                  ? payload.error
+                  : "Could not submit your inquiry.";
+              isSubmitting = false;
+              updateButton();
+              return;
+            }
+
+            status.textContent = "Saved. Opening submissions...";
+            window.location.href = "/submissions.html";
+          } catch (error) {
+            status.textContent = "Network error. Please try again.";
+            isSubmitting = false;
+            updateButton();
+          }
+        });
+
+        userInput.addEventListener("input", () => {
+          status.textContent = "";
+          updateButton();
+        });
+        inquiryInput.addEventListener("input", () => {
+          status.textContent = "";
+          updateButton();
+        });
+        updateButton();
+      })();
+    </script>
   </body>
 </html>
