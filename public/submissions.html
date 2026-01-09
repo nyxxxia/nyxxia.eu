@@ -38,7 +38,7 @@
           statusMessage.textContent = "Loading submissions...";
 
           try {
-            const response = await fetch("/api/inquiries", {
+            const response = await fetch("/inquiries", {
               cache: "no-store",
             });
             const payload = await response.json().catch(() => ({}));

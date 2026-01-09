@@ -90,7 +90,7 @@
           status.textContent = "Sending...";
 
           try {
-            const response = await fetch("/api/inquiries", {
+            const response = await fetch("/inquiries", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
