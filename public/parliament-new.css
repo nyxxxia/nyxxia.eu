@@ -6925,3 +6925,241 @@ body.us-election-open .legend {
     grid-template-columns: 1fr;
   }
 }
+
+/* ══════════════════════════════════════════════════════
+   ENHANCED MOBILE UI FOR US ELECTORAL SIMULATION MODE
+   ══════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem 0.5rem 3rem !important;
+  }
+
+  .us-election-wrap {
+    max-width: 100% !important;
+    padding: 0 4px !important;
+    gap: 10px !important;
+  }
+
+  .election-topbar {
+    min-height: 0 !important;
+    padding: 12px 14px !important;
+    gap: 10px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .election-topbar h2,
+  .party-drawer h3,
+  .map-header h3,
+  .race-card h3 {
+    font-size: clamp(20px, 5.5vw, 28px) !important;
+  }
+
+  .election-top-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  .election-top-actions .election-btn {
+    flex: 1 1 auto !important;
+    min-width: calc(50% - 6px) !important;
+    padding: 7px 10px !important;
+    font-size: 10px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  /* Candidate Strip / Cards */
+  .candidate-strip {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .candidate-card {
+    display: grid !important;
+    grid-template-columns: 46px minmax(0, 1fr) auto !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    align-items: center !important;
+  }
+
+  .candidate-photo-stack {
+    width: 46px !important;
+  }
+
+  .candidate-photo {
+    width: 46px !important;
+    height: 56px !important;
+    border-radius: 6px !important;
+  }
+
+  .candidate-info-block {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    min-width: 0 !important;
+  }
+
+  .candidate-name-title {
+    font-size: 15px !important;
+    line-height: 1.15 !important;
+  }
+
+  .candidate-party-label {
+    font-size: 10px !important;
+  }
+
+  .candidate-ev-display {
+    text-align: right !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+  }
+
+  .candidate-ev-num {
+    font-size: 24px !important;
+    line-height: 1 !important;
+  }
+
+  .candidate-pop-pct {
+    font-size: 10px !important;
+  }
+
+  /* 270 EV Progress Bar */
+  .count-line-card {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .count-line-header {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .count-line-title {
+    font-size: 11px !important;
+  }
+
+  .count-segment-bar {
+    height: 14px !important;
+  }
+
+  /* Map Container & Stage */
+  .real-map-card {
+    padding: 10px !important;
+    overflow: hidden !important;
+  }
+
+  .map-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .map-mode-tabs {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)) !important;
+    gap: 4px !important;
+  }
+
+  .real-us-map {
+    min-height: 220px !important;
+    max-height: 45vh !important;
+    width: 100% !important;
+  }
+
+  .us-state-grid {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 6px !important;
+    max-width: 100% !important;
+  }
+
+  .map-zoom-controls {
+    top: 6px !important;
+    left: 6px !important;
+    transform: scale(0.88) !important;
+    transform-origin: top left !important;
+  }
+
+  /* Controls Deck & Drawers */
+  .simple-controls {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    padding: 10px !important;
+  }
+
+  .simple-controls .election-btn {
+    padding: 8px 10px !important;
+    font-size: 10px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .race-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .race-card,
+  .chamber-card,
+  .government-card {
+    padding: 12px !important;
+  }
+
+  .government-role-buttons {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+  }
+
+  .party-drawer {
+    padding: 12px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  .style-switcher {
+    bottom: 10px !important;
+    right: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .election-top-actions .election-btn {
+    min-width: 100% !important;
+  }
+
+  .candidate-card {
+    grid-template-columns: 40px minmax(0, 1fr) auto !important;
+    padding: 8px 10px !important;
+  }
+
+  .candidate-photo-stack,
+  .candidate-photo {
+    width: 40px !important;
+    height: 48px !important;
+  }
+
+  .candidate-ev-num {
+    font-size: 20px !important;
+  }
+
+  .simple-controls {
+    grid-template-columns: 1fr !important;
+  }
+
+  .real-us-map {
+    min-height: 190px !important;
+  }
+}
+
