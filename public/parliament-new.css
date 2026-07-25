@@ -6938,12 +6938,12 @@ body.us-election-open .legend {
   }
 
   header {
-    margin-bottom: 1.25rem !important;
+    margin-bottom: 1rem !important;
     text-align: center !important;
   }
 
   header h1 {
-    font-size: 24px !important;
+    font-size: 22px !important;
     letter-spacing: -0.02em !important;
     font-weight: 800 !important;
   }
@@ -6954,7 +6954,7 @@ body.us-election-open .legend {
   }
 
   header .subtitle {
-    font-size: 11px !important;
+    font-size: 10px !important;
   }
 
   /* Native Mobile App Tab Bar (Pill Tabs & Micro-Interactions) */
@@ -6963,9 +6963,9 @@ body.us-election-open .legend {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     white-space: nowrap !important;
-    gap: 8px !important;
-    padding: 6px 4px 12px !important;
-    margin-bottom: 1rem !important;
+    gap: 6px !important;
+    padding: 4px 2px 8px !important;
+    margin-bottom: 0.75rem !important;
     width: 100% !important;
     max-width: 100% !important;
     scrollbar-width: none !important;
@@ -6978,9 +6978,9 @@ body.us-election-open .legend {
   .view-btn {
     flex: 0 0 auto !important;
     font-family: var(--font-mono) !important;
-    font-size: 10px !important;
+    font-size: 9px !important;
     letter-spacing: 0.08em !important;
-    padding: 9px 16px !important;
+    padding: 7px 13px !important;
     border-radius: 999px !important;
     border: 0.5px solid rgba(255, 255, 255, 0.12) !important;
     background: rgba(255, 255, 255, 0.04) !important;
@@ -7009,21 +7009,21 @@ body.us-election-open .legend {
     flex-wrap: wrap !important;
     gap: 6px !important;
     justify-content: center !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
   }
 
   .parliament-toggle-group {
     max-width: 100% !important;
     overflow-x: auto !important;
-    padding: 4px !important;
+    padding: 3px !important;
     background: rgba(18, 18, 24, 0.8) !important;
     border-radius: 999px !important;
     border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
   }
 
   .parliament-toggle {
-    padding: 6px 12px !important;
-    font-size: 9px !important;
+    padding: 5px 10px !important;
+    font-size: 8.5px !important;
   }
 
   .parliament-toggle:active {
@@ -7034,62 +7034,61 @@ body.us-election-open .legend {
   .stats {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 6px !important;
-    margin-top: 1rem !important;
+    gap: 5px !important;
+    margin-top: 0.75rem !important;
   }
 
   .stat-card {
-    padding: 12px 8px !important;
+    padding: 8px 6px !important;
     text-align: center !important;
     align-items: center !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)), #141418 !important;
     border: 0.5px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 16px rgba(0,0,0,0.3) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0,0,0,0.3) !important;
   }
 
   .stat-card .num {
-    font-size: 22px !important;
+    font-size: 18px !important;
     font-weight: 800 !important;
   }
 
   .stat-card .lbl {
-    font-size: 8px !important;
-    letter-spacing: 0.1em !important;
-    margin-top: 2px !important;
+    font-size: 7.5px !important;
+    letter-spacing: 0.08em !important;
+    margin-top: 1px !important;
   }
 
   .verdict {
-    padding: 11px 16px !important;
-    font-size: 11px !important;
-    margin-top: 10px !important;
-    border-radius: 12px !important;
+    padding: 9px 12px !important;
+    font-size: 10px !important;
+    margin-top: 8px !important;
+    border-radius: 10px !important;
   }
 
   .divider {
-    margin: 1.25rem 0 !important;
+    margin: 1rem 0 !important;
     opacity: 0.6 !important;
   }
 
-  /* Revamped General Parliament Party Cards & Glow-on-Active Voting Buttons */
+  /* COMPACT Normal Mode Party Cards */
   .party-table-head {
     display: none !important;
   }
 
   .parties {
-    gap: 10px !important;
+    gap: 6px !important;
   }
 
   .party-row {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
-    padding: 14px 16px !important;
-    border-radius: 14px !important;
+    gap: 8px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
     background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)), #14141a !important;
     border: 0.5px solid rgba(255, 255, 255, 0.09) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 6px 20px rgba(0,0,0,0.25) !important;
-    transition: transform 0.15s, border-color 0.15s !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 14px rgba(0,0,0,0.25) !important;
   }
 
   .party-info {
@@ -7100,48 +7099,48 @@ body.us-election-open .legend {
   }
 
   .swatch {
-    width: 12px !important;
-    height: 12px !important;
-    border-radius: 4px !important;
-    box-shadow: 0 0 10px currentColor !important;
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 3px !important;
+    box-shadow: 0 0 8px currentColor !important;
   }
 
   .party-name {
-    font-size: 15px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
     letter-spacing: -0.01em !important;
   }
 
   .seat-count {
-    font-size: 11px !important;
+    font-size: 10px !important;
     font-weight: 600 !important;
     font-family: var(--font-mono) !important;
     background: rgba(255, 255, 255, 0.06) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 4px 10px !important;
-    border-radius: 8px !important;
+    padding: 2px 8px !important;
+    border-radius: 6px !important;
     color: rgba(255, 255, 255, 0.8) !important;
   }
 
   .btn-group {
     display: grid !important;
     grid-template-columns: 1fr 1fr 1fr !important;
-    gap: 6px !important;
+    gap: 5px !important;
     width: 100% !important;
   }
 
   .vote-btn {
     width: 100% !important;
     text-align: center !important;
-    padding: 9px 0 !important;
-    font-size: 11px !important;
+    padding: 6px 0 !important;
+    font-size: 10px !important;
     font-weight: 600 !important;
-    letter-spacing: 0.06em !important;
-    border-radius: 10px !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 7px !important;
     border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
     background: rgba(255, 255, 255, 0.03) !important;
     color: rgba(255, 255, 255, 0.5) !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 
   .vote-btn:active {
@@ -7152,28 +7151,32 @@ body.us-election-open .legend {
     background: rgba(34, 197, 94, 0.18) !important;
     color: #4ade80 !important;
     border-color: rgba(34, 197, 94, 0.5) !important;
-    box-shadow: 0 0 16px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   }
 
   .vote-btn.active-no {
     background: rgba(239, 68, 68, 0.18) !important;
     color: #f87171 !important;
     border-color: rgba(239, 68, 68, 0.5) !important;
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   }
 
   .vote-btn.active-abs {
     background: rgba(168, 162, 158, 0.18) !important;
     color: #e7e5e4 !important;
     border-color: rgba(168, 162, 158, 0.5) !important;
-    box-shadow: 0 0 16px rgba(168, 162, 158, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 12px rgba(168, 162, 158, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   }
 
-  /* Mode Strip / Quorum Controls */
+  /* Mode Strip / Quorum Controls (Remove weird left bar) */
   .mode-strip {
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 8px !important;
+  }
+
+  .mode-sep {
+    display: none !important; /* Hide weird bar on mobile */
   }
 
   .mode-pills {
@@ -7184,9 +7187,9 @@ body.us-election-open .legend {
 
   .mode-pill {
     text-align: center !important;
-    padding: 8px 10px !important;
-    font-size: 10px !important;
-    border-radius: 10px !important;
+    padding: 7px 8px !important;
+    font-size: 9.5px !important;
+    border-radius: 8px !important;
   }
 
   .mode-pill:active {
@@ -7197,86 +7200,82 @@ body.us-election-open .legend {
     margin-left: 0 !important;
     justify-content: space-between !important;
     background: rgba(255,255,255,0.03) !important;
-    padding: 9px 14px !important;
-    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
     border: 0.5px solid rgba(255,255,255,0.08) !important;
   }
 
   /* ══════════════════════════════════════════════════════
-     US ELECTORAL SIMULATION MODE - POLISHED MOBILE UI
+     US ELECTORAL SIMULATION MODE - STREAMLINED MOBILE LAYOUT
      ══════════════════════════════════════════════════════ */
 
   .us-election-wrap {
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
 
-  /* Top Bar */
+  .us-election-wrap.visible {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Sticky Top Bar for Mode Switching */
   .election-topbar {
+    order: 1 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
     min-height: 0 !important;
-    padding: 16px !important;
-    gap: 12px !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    border-radius: 14px !important;
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)), #081220 !important;
-    border: 0.5px solid rgba(56, 189, 248, 0.22) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    border-radius: 0 0 14px 14px !important;
+    background: rgba(6, 17, 30, 0.95) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+    margin: -0.75rem -0.5rem 8px !important;
+    width: calc(100% + 1rem) !important;
   }
 
-  .election-topbar h2,
-  .party-drawer h3,
-  .map-header h3,
-  .race-card h3 {
-    font-size: clamp(20px, 5.5vw, 26px) !important;
+  .election-topbar h2 {
+    font-size: 18px !important;
     line-height: 1.1 !important;
   }
 
+  .election-kicker {
+    font-size: 8px !important;
+  }
+
   .election-top-actions {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 6px !important;
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 5px !important;
     width: 100% !important;
+    scrollbar-width: none !important;
+    padding-bottom: 2px !important;
+  }
+
+  .election-top-actions::-webkit-scrollbar {
+    display: none !important;
   }
 
   .election-top-actions .election-btn {
-    width: 100% !important;
-    min-width: 0 !important;
-    padding: 9px 10px !important;
-    font-size: 10px !important;
+    flex: 0 0 auto !important;
+    padding: 7px 12px !important;
+    font-size: 9.5px !important;
     text-align: center !important;
     justify-content: center !important;
-    border-radius: 10px !important;
-    transition: transform 0.15s, background 0.15s !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
   }
 
   .election-top-actions .election-btn:active {
-    transform: scale(0.95) !important;
-  }
-
-  /* Candidate Cards (Sports Scoreboard Card Design) */
-  .candidate-strip {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
-  }
-
-  .candidate-card {
-    display: grid !important;
-    grid-template-columns: 44px minmax(0, 1fr) auto !important;
-    gap: 12px !important;
-    padding: 12px 14px !important;
-    align-items: center !important;
-    border-radius: 14px !important;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)), #06111e !important;
-    border: 0.5px solid rgba(56, 189, 248, 0.18) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 20px rgba(0,0,0,0.3) !important;
-  }
-
-  .candidate-photo-stack {
-    width: 44px !important;
   }
 
   .candidate-photo {
