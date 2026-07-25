@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parliament — Vote Simulator</title>
-  <link rel="stylesheet" id="theme-css" href="/parliament-new.css?v=20260725-mobilev5" />
+  <link rel="stylesheet" id="theme-css" href="/parliament-new.css?v=20260725-mobilev6" />
   <style>
     .style-switcher {
       position: fixed; bottom: 20px; right: 20px; z-index: 10000;
@@ -6266,7 +6266,7 @@
     <button class="style-sw-btn active" id="sw-new" onclick="switchStyle('/parliament-new.css', this)">New</button>
   </div>
   <script>
-    const NEW_STYLESHEET = '/parliament-new.css?v=20260725-mobilev5';
+    const NEW_STYLESHEET = '/parliament-new.css?v=20260725-mobilev6';
     function switchStyle(css, btn) {
       const canonical = String(css || '').split('?')[0];
       document.getElementById('theme-css').href = canonical === '/parliament-new.css' || canonical === 'parliament-new.css' ? NEW_STYLESHEET : css;
