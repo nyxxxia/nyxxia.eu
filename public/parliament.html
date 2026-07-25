@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parliament — Vote Simulator</title>
-  <link rel="stylesheet" id="theme-css" href="parliament-new.css?v=20260723-editreset1" />
+  <link rel="stylesheet" id="theme-css" href="/parliament-new.css?v=20260723-editreset1" />
   <style>
     .style-switcher {
       position: fixed; bottom: 20px; right: 20px; z-index: 10000;
@@ -6256,35 +6256,35 @@
   fullRefresh();
   renderHistory();
   </script>
-  <script src="us-map-data.js"></script>
-  <script src="us-election-baseline.js"></script>
-  <script src="us-house-map-data.js?v=20260722-highres1"></script>
-  <script src="us-elections.js?v=20260723-editreset1"></script>
+  <script src="/us-map-data.js"></script>
+  <script src="/us-election-baseline.js"></script>
+  <script src="/us-house-map-data.js?v=20260722-highres1"></script>
+  <script src="/us-elections.js?v=20260723-editreset1"></script>
   <div class="style-switcher" id="style-switcher">
-    <button class="style-sw-btn" id="sw-classic" onclick="switchStyle('parliament.css', this)">Classic</button>
+    <button class="style-sw-btn" id="sw-classic" onclick="switchStyle('/parliament.css', this)">Classic</button>
     <div class="style-sw-sep"></div>
-    <button class="style-sw-btn active" id="sw-new" onclick="switchStyle('parliament-new.css', this)">New</button>
+    <button class="style-sw-btn active" id="sw-new" onclick="switchStyle('/parliament-new.css', this)">New</button>
   </div>
   <script>
-    const NEW_STYLESHEET = 'parliament-new.css?v=20260723-editreset1';
+    const NEW_STYLESHEET = '/parliament-new.css?v=20260723-editreset1';
     function switchStyle(css, btn) {
       const canonical = String(css || '').split('?')[0];
-      document.getElementById('theme-css').href = canonical === 'parliament-new.css' ? NEW_STYLESHEET : css;
+      document.getElementById('theme-css').href = canonical === '/parliament-new.css' || canonical === 'parliament-new.css' ? NEW_STYLESHEET : css;
       document.querySelectorAll('.style-sw-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       localStorage.setItem('parliament_style', canonical);
     }
     // Restore preference
     const savedStyle = localStorage.getItem('parliament_style');
-    if (savedStyle === 'parliament.css') {
-      document.getElementById('theme-css').href = savedStyle;
+    if (savedStyle === '/parliament.css' || savedStyle === 'parliament.css') {
+      document.getElementById('theme-css').href = '/parliament.css';
       document.getElementById('sw-classic').classList.add('active'), document.getElementById('sw-new').classList.remove('active');
-    } else if (savedStyle === 'parliament-new.css' || !savedStyle) {
+    } else if (savedStyle === '/parliament-new.css' || savedStyle === 'parliament-new.css' || !savedStyle) {
       document.getElementById('theme-css').href = NEW_STYLESHEET;
       document.getElementById('sw-new').classList.add('active'), document.getElementById('sw-classic').classList.remove('active');
-      localStorage.setItem('parliament_style', 'parliament-new.css');
-    } else if (savedStyle && savedStyle !== 'parliament-new.css') {
-      localStorage.setItem('parliament_style', 'parliament-new.css');
+      localStorage.setItem('parliament_style', '/parliament-new.css');
+    } else {
+      localStorage.setItem('parliament_style', '/parliament-new.css');
     }
   </script>
 </body>
