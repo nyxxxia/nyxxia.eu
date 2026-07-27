@@ -92,8 +92,8 @@
       background:var(--bg); border:0.5px solid var(--border); border-radius:7px;
       font-size:12px; color:var(--text);
     }
-    .wiki-swatch { width:10px; height:10px; border-radius:3px; flex-shrink:0; border:0.5px solid rgba(255,255,255,.1); }
-    [data-theme="light"] .wiki-swatch { border-color:rgba(0,0,0,.1); }
+    .wiki-swatch { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+    .caucus-parent-tag { font-family:var(--font-mono); font-size:10px; font-weight:400; color:var(--muted); opacity:.82; margin-left:5px; letter-spacing:0; }
     .wiki-preview-name { flex:1; font-weight:500; }
     .wiki-preview-seats { font-family:var(--font-mono); font-size:11px; color:var(--muted); }
     .wiki-import-btn {
@@ -862,7 +862,7 @@
       gap:8px; align-items:center; padding:8px 10px;
       border:0.5px solid var(--border); border-radius:8px; background:rgba(255,255,255,.022);
     }
-    .analysis-swatch { width:10px; height:10px; border-radius:3px; box-shadow:inset 0 1px 0 rgba(255,255,255,.18); }
+    .analysis-swatch { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
     .analysis-name { min-width:0; font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .analysis-value { font-family:var(--font-mono); font-size:10px; color:var(--muted); text-align:right; white-space:nowrap; }
     .analysis-delta.up { color:#22c55e; }
@@ -1829,6 +1829,13 @@
     }
     return `background: ${caucus}`;
   }
+
+  function partyCaucusSubtextHTML(p) {
+    if (!p || !p.parentId) return '';
+    const parent = parties.find(x => x.id === p.parentId);
+    if (!parent || parent.id === p.id) return '';
+    return `<span class="caucus-parent-tag">(${wikiEscape(parent.name)})</span>`;
+  }
   let votes       = {};
   let idCounter   = parties.length;
   let viewMode    = 'donut'; // 'donut' | 'bar' | 'coalition' | 'analysis'
@@ -2256,7 +2263,7 @@
       row.innerHTML = `
         <div class="party-info">
           <div class="swatch" style="${partySwatchCss(p)}"></div>
-          <span class="party-name">${p.name}</span>
+          <span class="party-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
         </div>
         <span class="seat-count">${p.seats}</span>
         <div class="btn-group">
@@ -2516,7 +2523,7 @@
         option.innerHTML = `
           <input type="checkbox" data-id="${p.id}" ${inCabinet ? 'checked' : ''} />
           <span class="swatch" style="${partySwatchCss(p)}"></span>
-          <span class="coalition-party-name">${p.name}</span>
+          <span class="coalition-party-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
           <span class="coalition-role-actions">
             <button class="role-toggle-btn support${isSupporting ? ' active' : ''}" data-id="${p.id}" data-role="support" ${inCabinet || !selected.size ? 'disabled' : ''}>External</button>
             <button class="role-toggle-btn passive${isPassive ? ' active' : ''}" data-id="${p.id}" data-role="passive" ${inCabinet || !selected.size ? 'disabled' : ''}>Passive</button>
@@ -3054,7 +3061,7 @@
       const value = `${before}${p.seats || 0} seats${pctText}${share}${delta}`;
       return `<div class="analysis-row">
         <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
-        <span class="analysis-name">${wikiEscape(p.name)}</span>
+        <span class="analysis-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
         <span class="analysis-value">${value}</span>
       </div>`;
     }).join('')}</div>`;
@@ -5016,7 +5023,7 @@
       row.innerHTML=`
         <div class="bar-meta">
           <div class="bar-swatch" style="${partySwatchCss(p)}"></div>
-          <span class="bar-name">${p.name}</span>
+          <span class="bar-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
           <span class="bar-seats-label">${p.seats} seats</span>
         </div>
         <div class="bar-party-track">
