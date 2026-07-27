@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Parliament — Vote Simulator</title>
-  <link rel="stylesheet" id="theme-css" href="/parliament-new.css?v=20260725-mobilev6" />
+  <link rel="stylesheet" id="theme-css" href="parliament-new.css?v=20260723-editreset1" />
   <style>
     .style-switcher {
       position: fixed; bottom: 20px; right: 20px; z-index: 10000;
@@ -116,14 +116,15 @@
     .editor-panel { display:none; flex-direction:column; gap:6px; margin-top:10px; }
     .editor-panel.open { display:flex; }
     .editor-header-row,
-    .editor-row { display:grid; grid-template-columns:28px 1fr 72px 122px 28px; gap:6px; align-items:center; }
+    .editor-row { display:grid; grid-template-columns:28px 1fr 115px 64px 105px 28px; gap:6px; align-items:center; }
     .editor-header-row {
       padding:0 2px 2px; color:var(--muted); font-family:var(--font-mono);
       font-size:8px; letter-spacing:.12em; text-transform:uppercase; opacity:.78;
     }
     .editor-header-row span:nth-child(3),
     .editor-header-row span:nth-child(4),
-    .editor-header-row span:nth-child(5) { text-align:center; }
+    .editor-header-row span:nth-child(5),
+    .editor-header-row span:nth-child(6) { text-align:center; }
     .editor-row input[type="color"] {
       width:28px; height:28px; border:0.5px solid var(--border-hi);
       border-radius:6px; background:var(--card); padding:2px; cursor:pointer;
@@ -1786,7 +1787,8 @@
      DATA
   ═══════════════════════════════════════════════ */
   const DEFAULT_PARTIES = [
-    { name:'ACU',                   seats:150, color:'#1C408C', westminsterRole:'government' },
+    { name:'ACU',                   seats:120, color:'#1C408C', westminsterRole:'government' },
+    { name:'Worker\'s Caucus',       seats:30,  color:'#22C55E', parentId:'p0', westminsterRole:'government' },
     { name:'ASWP',                  seats:125, color:'#BF1D29', westminsterRole:'opposition' },
     { name:'Left Bloc',             seats:77,  color:'#831100', westminsterRole:'opposition' },
     { name:'AfA',                   seats:49,  color:'#00C7FC', westminsterRole:'opposition' },
@@ -1795,6 +1797,46 @@
   ];
 
   let parties     = DEFAULT_PARTIES.map((p,i) => ({...p, id:'p'+i}));
+
+  function getPartyExteriorColor(p) {
+    if (!p) return '#888888';
+    if (p.parentId) {
+      const parent = parties.find(x => x.id === p.parentId);
+      if (parent && parent.id !== p.id) return parent.color || p.color || '#888888';
+    }
+    if (p.name) {
+      const match = p.name.match(/\((.*?)\)/);
+      if (match && match[1]) {
+        const parentSub = match[1].trim().toLowerCase();
+        const parent = parties.find(x => x.id !== p.id && (x.name.toLowerCase() === parentSub || x.name.toLowerCase().includes(parentSub) || parentSub.includes(x.name.toLowerCase())));
+        if (parent) return parent.color || p.color || '#888888';
+      }
+    }
+    if (p.secondaryColor) return p.secondaryColor;
+    return p.color || '#888888';
+  }
+
+  function getPartyInteriorColor(p) {
+    if (!p) return '#888888';
+    return p.color || '#888888';
+  }
+
+  function isPartyCaucus(p) {
+    if (!p) return false;
+    const ext = getPartyExteriorColor(p);
+    const intColor = getPartyInteriorColor(p);
+    return ext.toLowerCase() !== intColor.toLowerCase();
+  }
+
+  function partySwatchCss(p) {
+    if (!p) return 'background:#888888';
+    const caucus = getPartyInteriorColor(p);
+    const parent = getPartyExteriorColor(p);
+    if (parent.toLowerCase() !== caucus.toLowerCase()) {
+      return `background: linear-gradient(45deg, ${parent} 50%, ${caucus} 50%)`;
+    }
+    return `background: ${caucus}`;
+  }
   let votes       = {};
   let idCounter   = parties.length;
   let viewMode    = 'donut'; // 'donut' | 'bar' | 'coalition' | 'analysis'
@@ -1978,6 +2020,8 @@
       name: p.name || 'Unnamed',
       seats,
       color: p.color || randomPartyColor(),
+      parentId: p.parentId || '',
+      secondaryColor: p.secondaryColor || '',
       westminsterRole: WESTMINSTER_ROLES.some(role => role.key === p.westminsterRole) ? p.westminsterRole : 'auto',
       ideology: p.ideology || inferIdeologyKey(p),
     };
@@ -2016,7 +2060,7 @@
     c.innerHTML = '';
     const header = document.createElement('div');
     header.className = 'editor-header-row';
-    header.innerHTML = '<span></span><span>Party</span><span>Seats</span><span>Bench</span><span></span>';
+    header.innerHTML = '<span>Color</span><span>Party Name</span><span>Caucus Of</span><span>Seats</span><span>Bench</span><span></span>';
     c.appendChild(header);
     parties.forEach(p => {
       const row = document.createElement('div');
@@ -2025,9 +2069,16 @@
       const roleOptions = WESTMINSTER_ROLES.map(item =>
         `<option value="${item.key}" ${item.key===role?'selected':''}>${item.label}</option>`
       ).join('');
+      const parentOptions = [
+        `<option value="">(Standalone)</option>`,
+        ...parties.filter(x => x.id !== p.id).map(other =>
+          `<option value="${other.id}" ${p.parentId === other.id ? 'selected' : ''}>${other.name}</option>`
+        )
+      ].join('');
       row.innerHTML = `
-        <input type="color" value="${p.color}" data-field="color" />
+        <input type="color" value="${p.color}" data-field="color" title="Party / Caucus Brand Color" />
         <input type="text" value="${p.name}" data-field="name" placeholder="Party name" />
+        <select data-field="parentId" title="Caucus linkage / Parent party">${parentOptions}</select>
         <input type="number" value="${p.seats}" data-field="seats" min="1" />
         <select data-field="westminsterRole" title="Westminster bank / seat location">${roleOptions}</select>
         <button class="del-btn">×</button>`;
@@ -2038,14 +2089,19 @@
     });
   }
   function readEditorValues() {
-    return [...document.querySelectorAll('#editor-rows .editor-row')].map(row => ({
-      id:    row.dataset.id,
-      color: row.querySelector('[data-field="color"]').value,
-      name:  row.querySelector('[data-field="name"]').value.trim() || 'Unnamed',
-      seats: Math.max(1, parseInt(row.querySelector('[data-field="seats"]').value)||1),
-      westminsterRole: row.querySelector('[data-field="westminsterRole"]')?.value || 'auto',
-      ideology: parties.find(p=>p.id===row.dataset.id)?.ideology,
-    }));
+    return [...document.querySelectorAll('#editor-rows .editor-row')].map(row => {
+      const id = row.dataset.id;
+      const existing = parties.find(p => p.id === id);
+      return {
+        id,
+        color: row.querySelector('[data-field="color"]').value,
+        name:  row.querySelector('[data-field="name"]').value.trim() || 'Unnamed',
+        parentId: row.querySelector('[data-field="parentId"]')?.value || '',
+        seats: Math.max(1, parseInt(row.querySelector('[data-field="seats"]').value)||1),
+        westminsterRole: row.querySelector('[data-field="westminsterRole"]')?.value || 'auto',
+        ideology: existing?.ideology,
+      };
+    });
   }
   document.getElementById('add-party-btn').addEventListener('click', () => {
     parties = readEditorValues();
@@ -2207,7 +2263,7 @@
       row.className='party-row'; row.id='prow-'+p.id;
       row.innerHTML = `
         <div class="party-info">
-          <div class="swatch" style="background:${p.color}"></div>
+          <div class="swatch" style="${partySwatchCss(p)}"></div>
           <span class="party-name">${p.name}</span>
         </div>
         <span class="seat-count">${p.seats}</span>
@@ -2467,7 +2523,7 @@
         ).join('');
         option.innerHTML = `
           <input type="checkbox" data-id="${p.id}" ${inCabinet ? 'checked' : ''} />
-          <span class="swatch" style="background:${p.color}"></span>
+          <span class="swatch" style="${partySwatchCss(p)}"></span>
           <span class="coalition-party-name">${p.name}</span>
           <span class="coalition-role-actions">
             <button class="role-toggle-btn support${isSupporting ? ' active' : ''}" data-id="${p.id}" data-role="support" ${inCabinet || !selected.size ? 'disabled' : ''}>External</button>
@@ -2661,9 +2717,9 @@
     const {total} = recalc();
     const strength = coalitionStrength(seats, total, passiveSeats);
     const dots = [
-      ...selected.slice(0,8).map(p => `<span class="coalition-dot" title="${p.name}" style="background:${p.color}"></span>`),
-      ...supporters.slice(0, Math.max(0, 8 - selected.length)).map(p => `<span class="coalition-dot support" title="${p.name} (external support)" style="background:${p.color}"></span>`),
-      ...passiveParties.slice(0, Math.max(0, 8 - selected.length - supporters.length)).map(p => `<span class="coalition-dot passive" title="${p.name} (passive)" style="background:${p.color}"></span>`)
+      ...selected.slice(0,8).map(p => `<span class="coalition-dot" title="${p.name}" style="${partySwatchCss(p)}"></span>`),
+      ...supporters.slice(0, Math.max(0, 8 - selected.length)).map(p => `<span class="coalition-dot support" title="${p.name} (external support)" style="${partySwatchCss(p)}"></span>`),
+      ...passiveParties.slice(0, Math.max(0, 8 - selected.length - supporters.length)).map(p => `<span class="coalition-dot passive" title="${p.name} (passive)" style="${partySwatchCss(p)}"></span>`)
     ].join('');
     const supportMeta = supportSeats ? ` · ${supportSeats} external` : '';
     const passiveMeta = passiveSeats ? ` · ${passiveSeats} passive` : '';
@@ -2933,7 +2989,7 @@
     return `<div class="forecast-bars">${rows.map(row => {
       const pct = Math.max(0, Math.min(100, Number(row.pollPct) || 0));
       return `<div class="forecast-row">
-        <span class="analysis-swatch" style="background:${wikiEscape(row.color || '#888')}"></span>
+        <span class="analysis-swatch" style="${partySwatchCss(row)}"></span>
         <span class="forecast-bar"><span class="forecast-fill" style="width:${pct.toFixed(2)}%;background:${wikiEscape(row.color || '#888')}"></span></span>
         <span>${analysisPct(pct, 0)}</span>
       </div>`;
@@ -3005,7 +3061,7 @@
       const share = opts.showShare ? ` · ${analysisPct((p.seats || 0) / total * 100)}` : '';
       const value = `${before}${p.seats || 0} seats${pctText}${share}${delta}`;
       return `<div class="analysis-row">
-        <span class="analysis-swatch" style="background:${wikiEscape(p.color || '#888')}"></span>
+        <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
         <span class="analysis-name">${wikiEscape(p.name)}</span>
         <span class="analysis-value">${value}</span>
       </div>`;
@@ -3652,7 +3708,7 @@
       const pct = Math.min(100, (Number(p.seats) || 0) / maxSeats * 100);
       const color = wikiEscape(p.color || '#888');
       return `<div class="night-scoreboard-row">
-        <span class="analysis-swatch" style="background:${color}"></span>
+        <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
         <span class="score-name">${wikiEscape(p.name)}</span>
         <span class="score-seats">${p.seats}</span>
         <span class="night-scoreboard-bar"><span class="night-scoreboard-fill" style="width:${pct.toFixed(2)}%;background:${color}"></span></span>
@@ -3701,7 +3757,7 @@
       const color = wikiEscape(p.color || '#888');
       return `<div class="night-race-tile">
         <div class="night-race-top">
-          <span class="analysis-swatch" style="background:${color}"></span>
+          <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
           <span class="night-race-name">${wikiEscape(p.name)}</span>
           <span class="night-race-num">${p.seats}</span>
         </div>
@@ -4255,28 +4311,34 @@
     let lc = 0;
     yesAlloc.forEach(({p, count}) => {
       const color = colorFn(p, 'yes');
-      for (let i=0; i<count && lc<N; i++) assignment[lc++] = {color, vote:'yes'};
+      const parentColor = (parliamentColorMode === 'party') ? getPartyExteriorColor(p) : color;
+      const isCaucus = (parliamentColorMode === 'party') && isPartyCaucus(p);
+      for (let i=0; i<count && lc<N; i++) assignment[lc++] = {color, parentColor, isCaucus, party:p, vote:'yes'};
     });
     let rc = N - 1;
     noAlloc.forEach(({p, count}) => {
       const color = colorFn(p, 'no');
-      for (let i=0; i<count && rc>=lc; i++) assignment[rc--] = {color, vote:'no'};
+      const parentColor = (parliamentColorMode === 'party') ? getPartyExteriorColor(p) : color;
+      const isCaucus = (parliamentColorMode === 'party') && isPartyCaucus(p);
+      for (let i=0; i<count && rc>=lc; i++) assignment[rc--] = {color, parentColor, isCaucus, party:p, vote:'no'};
     });
     // abs fills center-left
     let ac = lc;
     absAlloc.forEach(({p, count}) => {
       const color = colorFn(p, 'abs');
-      for (let i=0; i<count && ac<=rc; i++) assignment[ac++] = {color, vote:'abs'};
+      for (let i=0; i<count && ac<=rc; i++) assignment[ac++] = {color, parentColor:color, isCaucus:false, party:p, vote:'abs'};
     });
     // none fills remaining
     let nc = ac;
     noneAlloc.forEach(({p, count}) => {
       const color = colorFn(p, 'none');
-      for (let i=0; i<count && nc<=rc; i++) assignment[nc++] = {color, vote:'none'};
+      const parentColor = (parliamentColorMode === 'party') ? getPartyExteriorColor(p) : color;
+      const isCaucus = (parliamentColorMode === 'party') && isPartyCaucus(p);
+      for (let i=0; i<count && nc<=rc; i++) assignment[nc++] = {color, parentColor, isCaucus, party:p, vote:'none'};
     });
     // catch any leftovers (rounding)
     const _none=getComputedStyle(document.documentElement).getPropertyValue('--none').trim()||'#2a2a2e';
-    for (let i=0; i<N; i++) if (!assignment[i]) assignment[i]={color:_none,vote:'none'};
+    for (let i=0; i<N; i++) if (!assignment[i]) assignment[i]={color:_none,parentColor:_none,isCaucus:false,vote:'none'};
 
     return assignment;
   }
@@ -4364,21 +4426,41 @@
       const x=cx+dot.r*Math.cos(dot.angle), y=cy+dot.r*Math.sin(dot.angle);
       const inactive = info.vote === 'none';
       const abstain = info.vote === 'abs';
+      const isDual = !inactive && info.isCaucus && info.parentColor && (info.parentColor.toLowerCase() !== info.color.toLowerCase());
+
       if (!inactive && !abstain) {
         dotGroup.appendChild(make('circle', {
           cx:x, cy:y, r:activeHaloR,
-          fill:info.color, opacity:.22, stroke:'none'
+          fill:isDual ? info.parentColor : info.color, opacity:.22, stroke:'none'
         }));
       }
-      const c=make('circle', {
-        cx:x, cy:y, r:inactive ? dotR : activeDotR,
-        fill:inactive ? (dark ? 'rgba(255,255,255,.28)' : 'rgba(0,0,0,.18)') : info.color,
-        stroke:inactive ? (dark ? 'rgba(125,211,252,.24)' : 'rgba(255,255,255,.72)') : info.color,
-        'stroke-width':inactive ? .55 : .25,
-        opacity:inactive ? .78 : abstain ? .82 : 1,
-        'vector-effect':'non-scaling-stroke'
-      });
-      dotGroup.appendChild(c);
+
+      if (isDual) {
+        dotGroup.appendChild(make('circle', {
+          cx:x, cy:y, r:activeDotR,
+          fill:info.parentColor,
+          stroke:info.parentColor,
+          'stroke-width':.25,
+          opacity:abstain ? .82 : 1,
+          'vector-effect':'non-scaling-stroke'
+        }));
+        dotGroup.appendChild(make('circle', {
+          cx:x, cy:y, r:activeDotR * 0.75,
+          fill:info.color,
+          opacity:abstain ? .82 : 1,
+          'vector-effect':'non-scaling-stroke'
+        }));
+      } else {
+        const c=make('circle', {
+          cx:x, cy:y, r:inactive ? dotR : activeDotR,
+          fill:inactive ? (dark ? 'rgba(255,255,255,.28)' : 'rgba(0,0,0,.18)') : info.color,
+          stroke:inactive ? (dark ? 'rgba(125,211,252,.24)' : 'rgba(255,255,255,.72)') : info.color,
+          'stroke-width':inactive ? .55 : .25,
+          opacity:inactive ? .78 : abstain ? .82 : 1,
+          'vector-effect':'non-scaling-stroke'
+        });
+        dotGroup.appendChild(c);
+      }
     });
     svg.appendChild(dotGroup);
 
@@ -4558,7 +4640,9 @@
         entries.push({
           party:p,
           role:westminsterResolvedRole(p, topPartyId),
-          color:p.color || '#888',
+          color:getPartyInteriorColor(p),
+          parentColor:getPartyExteriorColor(p),
+          isCaucus:isPartyCaucus(p),
           vote:westminsterVoteForDot(p, i, count),
         });
       }
@@ -4809,14 +4893,32 @@
         if (entry.vote === 'yes' || entry.vote === 'no') {
           group.appendChild(make('circle', { cx:p.x, cy:p.y, r:p.r+1.8, fill:voteStroke(entry.vote), opacity:.18 }));
         }
-        group.appendChild(make('circle', {
-          cx:p.x, cy:p.y, r:p.r,
-          fill:voteFill(entry),
-          stroke:voteStroke(entry.vote),
-          'stroke-width':entry.vote === 'none' ? .7 : 1.2,
-          opacity:entry.vote === 'none' ? .86 : 1,
-          'vector-effect':'non-scaling-stroke'
-        }));
+        const isDual = (parliamentColorMode !== 'vote') && entry.isCaucus && entry.parentColor && (entry.parentColor.toLowerCase() !== entry.color.toLowerCase());
+        if (isDual) {
+          group.appendChild(make('circle', {
+            cx:p.x, cy:p.y, r:p.r,
+            fill:entry.parentColor,
+            stroke:entry.parentColor,
+            'stroke-width':entry.vote === 'none' ? .7 : 1.2,
+            opacity:entry.vote === 'none' ? .86 : 1,
+            'vector-effect':'non-scaling-stroke'
+          }));
+          group.appendChild(make('circle', {
+            cx:p.x, cy:p.y, r:p.r * 0.75,
+            fill:entry.color,
+            opacity:entry.vote === 'none' ? .86 : 1,
+            'vector-effect':'non-scaling-stroke'
+          }));
+        } else {
+          group.appendChild(make('circle', {
+            cx:p.x, cy:p.y, r:p.r,
+            fill:voteFill(entry),
+            stroke:voteStroke(entry.vote),
+            'stroke-width':entry.vote === 'none' ? .7 : 1.2,
+            opacity:entry.vote === 'none' ? .86 : 1,
+            'vector-effect':'non-scaling-stroke'
+          }));
+        }
       });
       svg.appendChild(group);
     });
@@ -4921,7 +5023,7 @@
       const nonePct=((p.seats-e.yes-e.no-e.abs)/total*100).toFixed(1);
       row.innerHTML=`
         <div class="bar-meta">
-          <div class="bar-swatch" style="background:${p.color}"></div>
+          <div class="bar-swatch" style="${partySwatchCss(p)}"></div>
           <span class="bar-name">${p.name}</span>
           <span class="bar-seats-label">${p.seats} seats</span>
         </div>
@@ -6256,35 +6358,35 @@
   fullRefresh();
   renderHistory();
   </script>
-  <script src="/us-map-data.js"></script>
-  <script src="/us-election-baseline.js"></script>
-  <script src="/us-house-map-data.js?v=20260722-highres1"></script>
-  <script src="/us-elections.js?v=20260723-editreset1"></script>
+  <script src="us-map-data.js"></script>
+  <script src="us-election-baseline.js"></script>
+  <script src="us-house-map-data.js?v=20260722-highres1"></script>
+  <script src="us-elections.js?v=20260723-editreset1"></script>
   <div class="style-switcher" id="style-switcher">
-    <button class="style-sw-btn" id="sw-classic" onclick="switchStyle('/parliament.css', this)">Classic</button>
+    <button class="style-sw-btn" id="sw-classic" onclick="switchStyle('parliament.css', this)">Classic</button>
     <div class="style-sw-sep"></div>
-    <button class="style-sw-btn active" id="sw-new" onclick="switchStyle('/parliament-new.css', this)">New</button>
+    <button class="style-sw-btn active" id="sw-new" onclick="switchStyle('parliament-new.css', this)">New</button>
   </div>
   <script>
-    const NEW_STYLESHEET = '/parliament-new.css?v=20260725-mobilev6';
+    const NEW_STYLESHEET = 'parliament-new.css?v=20260723-editreset1';
     function switchStyle(css, btn) {
       const canonical = String(css || '').split('?')[0];
-      document.getElementById('theme-css').href = canonical === '/parliament-new.css' || canonical === 'parliament-new.css' ? NEW_STYLESHEET : css;
+      document.getElementById('theme-css').href = canonical === 'parliament-new.css' ? NEW_STYLESHEET : css;
       document.querySelectorAll('.style-sw-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       localStorage.setItem('parliament_style', canonical);
     }
     // Restore preference
     const savedStyle = localStorage.getItem('parliament_style');
-    if (savedStyle === '/parliament.css' || savedStyle === 'parliament.css') {
-      document.getElementById('theme-css').href = '/parliament.css';
+    if (savedStyle === 'parliament.css') {
+      document.getElementById('theme-css').href = savedStyle;
       document.getElementById('sw-classic').classList.add('active'), document.getElementById('sw-new').classList.remove('active');
-    } else if (savedStyle === '/parliament-new.css' || savedStyle === 'parliament-new.css' || !savedStyle) {
+    } else if (savedStyle === 'parliament-new.css' || !savedStyle) {
       document.getElementById('theme-css').href = NEW_STYLESHEET;
       document.getElementById('sw-new').classList.add('active'), document.getElementById('sw-classic').classList.remove('active');
-      localStorage.setItem('parliament_style', '/parliament-new.css');
-    } else {
-      localStorage.setItem('parliament_style', '/parliament-new.css');
+      localStorage.setItem('parliament_style', 'parliament-new.css');
+    } else if (savedStyle && savedStyle !== 'parliament-new.css') {
+      localStorage.setItem('parliament_style', 'parliament-new.css');
     }
   </script>
 </body>
