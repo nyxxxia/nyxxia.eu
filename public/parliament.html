@@ -2493,6 +2493,7 @@
     progress.classList.toggle('coalition-progress-ready', strength.key === 'ready');
     progress.classList.toggle('coalition-progress-passive', strength.key === 'passive');
     progress.classList.toggle('coalition-progress-super', strength.key === 'super');
+    const selectedParties = parties.filter(p => selected.has(p.id) || supporting.has(p.id) || passive.has(p.id));
     fill.innerHTML = selectedParties.map(p => {
       const pct = displayedSeats ? (p.seats / displayedSeats * 100).toFixed(3) : 0;
       const role = supporting.has(p.id) ? 'support' : passive.has(p.id) ? 'passive' : 'cabinet';
