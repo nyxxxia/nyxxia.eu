@@ -2502,7 +2502,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        ? `background: linear-gradient(45deg, ${parentColor} 50%, ${caucusColor} 50%);`
         : `background-color:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
@@ -4990,7 +4990,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        ? `background: linear-gradient(45deg, ${parentColor} 50%, ${caucusColor} 50%);`
         : `background:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
@@ -5002,7 +5002,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        ? `background: linear-gradient(45deg, ${parentColor} 50%, ${caucusColor} 50%);`
         : `background:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
