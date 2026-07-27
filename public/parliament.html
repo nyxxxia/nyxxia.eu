@@ -1804,14 +1804,6 @@
       const parent = parties.find(x => x.id === p.parentId);
       if (parent && parent.id !== p.id) return parent.color || p.color || '#888888';
     }
-    if (p.name) {
-      const match = p.name.match(/\((.*?)\)/);
-      if (match && match[1]) {
-        const parentSub = match[1].trim().toLowerCase();
-        const parent = parties.find(x => x.id !== p.id && (x.name.toLowerCase() === parentSub || x.name.toLowerCase().includes(parentSub) || parentSub.includes(x.name.toLowerCase())));
-        if (parent) return parent.color || p.color || '#888888';
-      }
-    }
     if (p.secondaryColor) return p.secondaryColor;
     return p.color || '#888888';
   }
