@@ -2493,12 +2493,19 @@
     progress.classList.toggle('coalition-progress-ready', strength.key === 'ready');
     progress.classList.toggle('coalition-progress-passive', strength.key === 'passive');
     progress.classList.toggle('coalition-progress-super', strength.key === 'super');
-    const selectedParties = parties.filter(p => selected.has(p.id) || supporting.has(p.id) || passive.has(p.id));
     fill.innerHTML = selectedParties.map(p => {
       const pct = displayedSeats ? (p.seats / displayedSeats * 100).toFixed(3) : 0;
       const role = supporting.has(p.id) ? 'support' : passive.has(p.id) ? 'passive' : 'cabinet';
       const label = role === 'support' ? 'external support' : role === 'passive' ? 'passive' : 'cabinet';
-      return `<span class="coalition-progress-seg ${role === 'support' ? 'support' : role === 'passive' ? 'passive' : ''}" title="${p.name}: ${p.seats} seats (${label})" style="background-color:${p.color};width:${pct}%"></span>`;
+      const caucus = isPartyCaucus(p);
+      const parentColor = getPartyExteriorColor(p);
+      const caucusColor = getPartyInteriorColor(p);
+      const bgStyle = caucus
+        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        : `background-color:${p.color};`;
+      const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
+      const caucusText = parent ? ` (caucus of ${parent.name})` : '';
+      return `<span class="coalition-progress-seg ${role === 'support' ? 'support' : role === 'passive' ? 'passive' : ''}${caucus ? ' caucus' : ''}" title="${p.name}${caucusText}: ${p.seats} seats (${label})" style="${bgStyle}width:${pct}%"></span>`;
     }).join('');
     renderCoalitionInsight(selected, supporting, passive, seats, majority, cabinetSeats, supportSeats, passiveSeats);
 
@@ -4978,11 +4985,27 @@
     const noParties  = parties.filter(p=>effectiveSeats(p).no>0 ).sort((a,b)=>effectiveSeats(b).no-effectiveSeats(a).no);
     yesParties.forEach(p => {
       const pct=(effectiveSeats(p).yes/total*100).toFixed(2);
-      yesSegs+=`<div class="bar-seg" title="${p.name}: ${effectiveSeats(p).yes}" style="background:${p.color};width:${pct}%;opacity:0.9"></div>`;
+      const caucus = isPartyCaucus(p);
+      const parentColor = getPartyExteriorColor(p);
+      const caucusColor = getPartyInteriorColor(p);
+      const bgStyle = caucus
+        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        : `background:${p.color};`;
+      const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
+      const caucusText = parent ? ` (caucus of ${parent.name})` : '';
+      yesSegs+=`<div class="bar-seg${caucus ? ' caucus' : ''}" title="${p.name}${caucusText}: ${effectiveSeats(p).yes}" style="${bgStyle}width:${pct}%;opacity:0.9"></div>`;
     });
     noParties.forEach(p => {
       const pct=(effectiveSeats(p).no/total*100).toFixed(2);
-      noSegs+=`<div class="bar-seg" title="${p.name}: ${effectiveSeats(p).no}" style="background:${p.color};width:${pct}%;opacity:0.9"></div>`;
+      const caucus = isPartyCaucus(p);
+      const parentColor = getPartyExteriorColor(p);
+      const caucusColor = getPartyInteriorColor(p);
+      const bgStyle = caucus
+        ? `background: linear-gradient(180deg, ${parentColor} 35%, ${caucusColor} 35%);`
+        : `background:${p.color};`;
+      const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
+      const caucusText = parent ? ` (caucus of ${parent.name})` : '';
+      noSegs+=`<div class="bar-seg${caucus ? ' caucus' : ''}" title="${p.name}${caucusText}: ${effectiveSeats(p).no}" style="${bgStyle}width:${pct}%;opacity:0.9"></div>`;
     });
     const majPct=(majority/total*100).toFixed(2);
     globalDiv.innerHTML = `
