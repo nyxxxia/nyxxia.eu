@@ -457,12 +457,12 @@ header .subtitle {
   padding: 10px 14px !important;
   border-radius: 8px !important;
   border: none !important;
-  border-bottom: 2px solid rgba(56,189,248,0.45) !important;
-  border-top: 2px solid rgba(56,189,248,0.12) !important;
+  border-bottom: 2px solid var(--night-leader-color, #38bdf8) !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
   background:
     linear-gradient(90deg, #021830 0%, #040f22 40%, #0a0818 100%) !important;
   box-shadow:
-    0 0 0 0.5px rgba(56,189,248,0.18),
+    0 0 0 0.5px rgba(255,255,255,0.08),
     0 4px 24px rgba(0,0,0,0.40),
     inset 0 1px 0 rgba(255,255,255,0.06) !important;
   position: relative;
@@ -477,8 +477,8 @@ header .subtitle {
     0deg,
     transparent,
     transparent 3px,
-    rgba(56,189,248,0.012) 3px,
-    rgba(56,189,248,0.012) 4px
+    rgba(255,255,255,0.012) 3px,
+    rgba(255,255,255,0.012) 4px
   );
   pointer-events: none;
 }
@@ -510,8 +510,9 @@ header .subtitle {
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   color: #020c1a !important;
-  background: #38bdf8 !important;
+  background: var(--night-leader-color, #38bdf8) !important;
   flex-shrink: 0 !important;
+  transition: background 0.3s ease !important;
 }
 
 /* LIVE badge ── */
@@ -567,12 +568,13 @@ header .subtitle {
   min-height: 48px !important;
   padding: 10px 16px !important;
   border-radius: 10px !important;
-  border: 0.5px solid rgba(56, 189, 248, 0.25) !important;
-  border-left: 4px solid #38bdf8 !important;
-  background: linear-gradient(90deg, rgba(56,189,248,0.18) 0%, rgba(15,23,42,0.88) 100%) !important;
+  border: 0.5px solid rgba(255,255,255,0.12) !important;
+  border-left: 4px solid var(--night-leader-color, #38bdf8) !important;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(15,23,42,0.88) 100%) !important;
   color: #f8fafc !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.08) !important;
   backdrop-filter: blur(12px) !important;
+  transition: border-left-color 0.3s ease !important;
 }
 .night-projection-kicker {
   font-family: var(--font-tv), var(--font-mono) !important;
@@ -580,8 +582,9 @@ header .subtitle {
   font-weight: 800 !important;
   letter-spacing: 0.16em !important;
   text-transform: uppercase !important;
-  color: #38bdf8 !important;
+  color: var(--night-leader-color, #38bdf8) !important;
   white-space: nowrap !important;
+  transition: color 0.3s ease !important;
 }
 .night-headline {
   min-width: 0 !important;
@@ -623,14 +626,14 @@ header .subtitle {
   flex-direction: column !important;
   justify-content: space-between !important;
   gap: 6px !important;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .night-callout.primary {
-  border-color: rgba(56,189,248,0.32) !important;
+  border-color: var(--night-leader-color, #38bdf8) !important;
   background:
-    linear-gradient(135deg, rgba(56,189,248,0.22), rgba(4,14,32,0.86) 55%),
+    linear-gradient(135deg, rgba(255,255,255,0.08), rgba(4,14,32,0.86) 55%),
     rgba(4,14,32,0.92) !important;
-  box-shadow: inset 0 1px 0 rgba(56,189,248,0.18), 0 6px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(56,189,248,0.08) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 24px rgba(0,0,0,0.28) !important;
 }
 .night-callout span {
   font-family: var(--font-mono) !important;

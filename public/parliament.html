@@ -3888,6 +3888,10 @@
     if (!stage) return;
     const model = electionNightModel();
     const leader = model.leader;
+    const leaderColor = leader ? (getPartyInteriorColor(leader) || leader.color || '#38bdf8') : '#38bdf8';
+    const leaderExtColor = leader ? getPartyExteriorColor(leader) : leaderColor;
+    stage.style.setProperty('--night-leader-color', leaderColor);
+    stage.style.setProperty('--night-leader-ext', leaderExtColor);
     const topRows = model.rows.slice(0, 10);
     const maxDeclared = Math.max(1, ...topRows.map(p => Number(p.seats) || 0));
     const pathToMajority = leader ? Math.max(0, model.majority - leader.seats) : model.majority;
