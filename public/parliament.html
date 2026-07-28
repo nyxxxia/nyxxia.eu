@@ -3713,12 +3713,11 @@
     const maxSeats = Math.max(1, ...top.map(p => Number(p.seats) || 0), model.majority);
     return top.map(p => {
       const pct = Math.min(100, (Number(p.seats) || 0) / maxSeats * 100);
-      const color = wikiEscape(p.color || '#888');
       return `<div class="night-scoreboard-row">
         <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
-        <span class="score-name">${wikiEscape(p.name)}</span>
+        <span class="score-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
         <span class="score-seats">${p.seats}</span>
-        <span class="night-scoreboard-bar"><span class="night-scoreboard-fill" style="width:${pct.toFixed(2)}%;background:${color}"></span></span>
+        <span class="night-scoreboard-bar"><span class="night-scoreboard-fill" style="width:${pct.toFixed(2)}%;${partySwatchCss(p)}"></span></span>
       </div>`;
     }).join('');
   }
@@ -3761,14 +3760,13 @@
     return model.rows.slice(0, 6).map(p => {
       const pace = electionNightPace(p, model);
       const pct = Math.min(100, (p.seats || 0) / maxSeats * 100);
-      const color = wikiEscape(p.color || '#888');
       return `<div class="night-race-tile">
         <div class="night-race-top">
           <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
-          <span class="night-race-name">${wikiEscape(p.name)}</span>
+          <span class="night-race-name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
           <span class="night-race-num">${p.seats}</span>
         </div>
-        <span class="night-race-bar"><span class="night-race-fill" style="width:${pct.toFixed(2)}%;background:${color}"></span></span>
+        <span class="night-race-bar"><span class="night-race-fill" style="width:${pct.toFixed(2)}%;${partySwatchCss(p)}"></span></span>
         <span class="night-race-sub">proj ${p.before} · pace ${nightDeltaText(pace.delta)}</span>
       </div>`;
     }).join('');
@@ -3785,17 +3783,17 @@
       </div>`;
     }
     return model.calls.slice(0, 5).map(call => {
-      const color = wikiEscape(call.color || '#888');
+      const p = parties.find(x => x.id === call.partyId) || { name: call.partyName, color: call.color };
       const meta = call.callType === 'GAIN'
-        ? `Gain from ${call.fromName} · swing ${call.swing}`
-        : `Hold · swing ${call.swing}`;
+        ? `Gain from ${call.fromName} · swing ${call.swing}%`
+        : `Hold · swing ${call.swing}%`;
       return `<div class="night-call-card">
-        <span class="night-call-dot" style="background:${color}"></span>
+        <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
         <span class="night-call-main">
-          <span class="night-call-seat">${wikiEscape(call.seatName)} · ${wikiEscape(call.partyName)}</span>
+          <span class="night-call-seat">${wikiEscape(call.seatName)} · ${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
           <span class="night-call-meta">${wikiEscape(meta)}</span>
         </span>
-        <span class="night-call-badge">${wikiEscape(call.callType)}</span>
+        <span class="night-call-badge ${call.callType === 'GAIN' ? 'gain' : 'hold'}">${wikiEscape(call.callType)}</span>
       </div>`;
     }).join('');
   }
@@ -3844,13 +3842,18 @@
     const assignment = [];
     displayRows.forEach((row, index) => {
       for (let i=0; i<(counts[index] || 0); i++) {
+        const color = row.called ? getPartyInteriorColor(row) : (currentTheme === 'light' ? 'rgba(0,0,0,.16)' : 'rgba(255,255,255,.22)');
+        const parentColor = row.called ? getPartyExteriorColor(row) : color;
+        const isCaucus = row.called ? isPartyCaucus(row) : false;
         assignment.push({
-          color: row.called ? row.color : (currentTheme === 'light' ? 'rgba(0,0,0,.16)' : 'rgba(255,255,255,.22)'),
+          color,
+          parentColor,
+          isCaucus,
           vote: row.called ? 'yes' : 'none'
         });
       }
     });
-    while (assignment.length < dotCount) assignment.push({ color:'rgba(255,255,255,.18)', vote:'none' });
+    while (assignment.length < dotCount) assignment.push({ color:'rgba(255,255,255,.18)', parentColor:'rgba(255,255,255,.18)', isCaucus:false, vote:'none' });
     renderHemicycle(svg, allDots, assignment.slice(0, dotCount), model.total, model.majority, dotCount);
     svg.querySelectorAll('text').forEach(t => {
       const text = (t.textContent || '').trim().toUpperCase();
@@ -3931,14 +3934,13 @@
         const pct = p.seats / maxDeclared * 100;
         const pace = electionNightPace(p, model);
         const paceClass = pace.delta > 0 ? 'up' : pace.delta < 0 ? 'down' : '';
-        const color = wikiEscape(p.color || '#888');
         return `<div class="night-party-row">
-          <span class="analysis-swatch" style="background:${color}"></span>
-          <span class="name">${wikiEscape(p.name)}</span>
+          <span class="analysis-swatch" style="${partySwatchCss(p)}"></span>
+          <span class="name">${wikiEscape(p.name)}${partyCaucusSubtextHTML(p)}</span>
           <span class="seats">${p.seats}</span>
           <span class="projected">proj ${p.before}</span>
           <span class="night-party-bar" title="${wikiEscape(`${p.name}: ${p.seats} declared, ${p.before} projected`)}">
-            <span class="night-party-fill" style="width:${pct.toFixed(2)}%;background:${color}"></span>
+            <span class="night-party-fill" style="width:${pct.toFixed(2)}%;${partySwatchCss(p)}"></span>
             <span class="night-party-bar-label">${p.seats}/${p.before} seats</span>
           </span>
           <span class="night-party-change ${paceClass}">${nightDeltaText(pace.delta)}</span>
@@ -4095,7 +4097,12 @@
   document.getElementById('analysis-tabs').addEventListener('click', e => {
     const btn = e.target.closest('[data-analysis-tab]');
     if (!btn) return;
-    analysisMode = btn.dataset.analysisTab;
+    const targetTab = btn.dataset.analysisTab;
+    if (analysisMode !== targetTab && targetTab !== 'night') {
+      analysisNightBroadcast = false;
+      document.body.classList.remove('election-night-open');
+    }
+    analysisMode = targetTab;
     renderAnalysisSuite();
   });
   document.getElementById('analysis-content').addEventListener('input', e => {
@@ -4152,6 +4159,7 @@
     }
     if (action === 'toggle-night-broadcast') {
       analysisNightBroadcast = !analysisNightBroadcast;
+      document.body.classList.toggle('election-night-open', analysisNightBroadcast);
       renderAnalysisSuite();
       if (analysisNightBroadcast) window.scrollTo(0, 0);
       return;
