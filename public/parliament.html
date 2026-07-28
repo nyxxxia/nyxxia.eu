@@ -1825,7 +1825,7 @@
     const caucus = getPartyInteriorColor(p);
     const parent = getPartyExteriorColor(p);
     if (parent.toLowerCase() !== caucus.toLowerCase()) {
-      return `background: linear-gradient(to bottom right, ${caucus} 42%, ${parent} 58%)`;
+      return `background: linear-gradient(to bottom right, ${caucus} 50%, ${parent} 50%)`;
     }
     return `background: ${caucus}`;
   }
@@ -2502,7 +2502,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(to bottom right, ${caucusColor} 42%, ${parentColor} 58%);`
+        ? `background: linear-gradient(to bottom right, ${caucusColor} 50%, ${parentColor} 50%);`
         : `background-color:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
@@ -4990,7 +4990,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(to bottom right, ${caucusColor} 42%, ${parentColor} 58%);`
+        ? `background: linear-gradient(to bottom right, ${caucusColor} 50%, ${parentColor} 50%);`
         : `background:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
@@ -5002,7 +5002,7 @@
       const parentColor = getPartyExteriorColor(p);
       const caucusColor = getPartyInteriorColor(p);
       const bgStyle = caucus
-        ? `background: linear-gradient(to bottom right, ${caucusColor} 42%, ${parentColor} 58%);`
+        ? `background: linear-gradient(to bottom right, ${caucusColor} 50%, ${parentColor} 50%);`
         : `background:${p.color};`;
       const parent = caucus && p.parentId ? parties.find(x => x.id === p.parentId) : null;
       const caucusText = parent ? ` (caucus of ${parent.name})` : '';
