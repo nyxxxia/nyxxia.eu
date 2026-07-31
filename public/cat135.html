@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Catalonia · 135</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0&family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="cat135/vendor/leaflet.css">
+  <link rel="stylesheet" href="cat135/styles.css">
+</head>
+<body>
+  <header>
+    <div class="app-mark"><span class="material-symbols-rounded">map</span></div>
+    <div class="title-block"><h1>Catalonia 135</h1><span class="eyebrow">FPTP redistricting</span></div>
+    <div id="loadState">Loading official 2024 sections…</div>
+    <nav class="workspace-tabs" aria-label="Workspace"><button class="active" data-panel="map">Map</button><button data-panel="statistics">Statistics</button><button data-panel="analyze">Analyze</button><button data-panel="compare">Compare</button></nav>
+    <div class="toolbar-spacer"></div>
+    <button id="save" class="toolbar-action" title="Save in browser"><span class="material-symbols-rounded">save</span><span>Save</span></button>
+    <button id="load" class="toolbar-action" title="Load saved plan"><span class="material-symbols-rounded">folder_open</span><span>Load</span></button>
+    <button id="export" class="toolbar-action" title="Export assignments"><span class="material-symbols-rounded">download</span><span>Export</span></button>
+    <label class="toolbar-action file" title="Import plan"><span class="material-symbols-rounded">upload</span><span>Import</span><input id="import" type="file" accept=".json,.csv"></label>
+    <button id="clear" class="icon-button danger" aria-label="Clear plan" title="Clear plan"><span class="material-symbols-rounded">delete_sweep</span></button>
+    <button id="themeToggle" class="icon-button" aria-label="Use dark mode" title="Dark mode"><span class="material-symbols-rounded">dark_mode</span></button>
+  </header>
+
+  <main id="mapPanel" class="workspace-panel" data-workspace-panel="map">
+    <aside class="left-panel">
+      <section>
+        <h2>Drawing tool</h2>
+        <div class="tool-switch">
+          <button id="brushTool" class="active"><span class="material-symbols-rounded">brush</span>Brush</button>
+          <button id="eraserTool"><span class="material-symbols-rounded">ink_eraser</span>Eraser</button>
+        </div>
+      </section>
+      <section class="tool">
+        <label class="section-label" for="district">Constituency</label>
+        <div class="district-picker">
+          <button id="prev" aria-label="Previous district"><span class="material-symbols-rounded">chevron_left</span></button>
+          <input id="district" type="number" min="1" max="135" value="1">
+          <button id="next" aria-label="Next district"><span class="material-symbols-rounded">chevron_right</span></button>
+        </div>
+        <button id="holdPaint" class="paint-button"><span class="material-symbols-rounded">brush</span><span><b>Hold to paint</b><small>release to stop</small></span></button>
+        <p>Hold the blue button and sweep across precincts. Select Eraser or hold Shift to remove assignments.</p>
+      </section>
+      <section>
+        <h2>Plan balance</h2>
+        <div class="metric"><span>Assigned</span><strong id="assigned">0 / 5,117</strong></div>
+        <div class="metric"><span>Ideal electorate</span><strong id="ideal">—</strong></div>
+        <div class="metric"><span>Allowed range</span><strong id="range">—</strong></div>
+        <div class="limit"><label for="maxDeviation">Maximum deviation</label><div><input id="maxDeviation" type="number" min="0" max="25" step="0.5" value="5"><span>%</span></div></div>
+        <div class="metric"><span>Current deviation</span><strong id="deviation">—</strong></div>
+        <div id="planStatus" class="plan-status"></div>
+        <div id="warning" class="warning"></div>
+      </section>
+    </aside>
+
+    <section class="map-stage">
+      <div id="map"></div>
+      <div class="layer-panel">
+        <h2><span class="material-symbols-rounded">layers</span>Map layers</h2>
+        <div class="map-options appearance-options">
+          <div class="appearance-group"><label for="districtMode">Drawn districts</label><select id="districtMode"><option value="unique">Unique plan colors</option><option value="partisan">Partisan lean</option><option value="none">No district overlay</option></select><label class="check-row sub-option"><span>District vote strength</span><input id="districtStrength" type="checkbox" checked disabled></label></div>
+          <div class="appearance-group"><label for="precinctMode">Precincts underneath</label><select id="precinctMode"><option value="partisan">Partisan lean</option><option value="neutral">Neutral geography</option></select><label class="check-row sub-option"><span>Precinct vote strength</span><input id="precinctStrength" type="checkbox" checked></label></div>
+          <label class="check-row"><span>Light City Map</span><input id="basemapToggle" type="checkbox" checked></label>
+        </div>
+        <p id="viewHelp">District and precinct appearance are calculated independently.</p>
+        <div id="legend" class="legend"></div>
+      </div>
+    </section>
+
+    <aside class="right-panel">
+      <section>
+        <h2>Selected constituency</h2>
+        <div id="districtStats" class="empty">Paint a section to begin.</div>
+      </section>
+      <section>
+        <h2>Projected seats</h2>
+        <div id="seats" class="seat-grid"></div>
+      </section>
+      <section class="districts-section">
+        <div class="section-heading"><h2>All constituencies</h2><div class="district-key"><span>✓ valid</span><span>! population</span><span>↯ disconnected</span></div></div>
+        <div id="districtList" class="district-list"></div>
+      </section>
+    </aside>
+  </main>
+
+  <section id="statisticsPanel" class="workspace-panel report-panel" data-workspace-panel="statistics" hidden>
+    <div class="report-header"><div><h2>Statistics <span id="statisticsCount"></span></h2><p>Live electorate, validity, shape, winner, and projected party vote by district.</p></div></div>
+    <div class="table-shell"><table id="statisticsTable" class="statistics-table"></table></div>
+  </section>
+
+  <section id="analyzePanel" class="workspace-panel report-panel" data-workspace-panel="analyze" hidden>
+    <div class="report-header"><div><h2>Analyze</h2><p>Live plan requirements and quantitative diagnostics. Ratings update with every edit.</p></div></div>
+    <div id="analysisOverview" class="analysis-overview"></div>
+    <section class="analysis-section"><h3>Requirements</h3><div id="requirementsGrid" class="requirements-grid"></div></section>
+    <div id="analysisCards" class="analysis-cards"></div>
+  </section>
+
+  <section id="comparePanel" class="workspace-panel report-panel" data-workspace-panel="compare" hidden>
+    <div class="report-header"><div><h2>Compare</h2><p>Explore how district vote distributions translate into projected FPTP seats.</p></div><label class="compare-party">Party<select id="compareParty"></select></label></div>
+    <div class="compare-grid"><section class="chart-card"><h3>Rank–votes graph</h3><div id="rankVotesChart" class="chart-host"></div></section><section class="chart-card"><h3>Seats–votes curve</h3><div id="seatsVotesChart" class="chart-host"></div></section></div>
+  </section>
+
+  <dialog id="savePlanDialog" class="plan-dialog"><form method="dialog"><div class="dialog-title"><span class="material-symbols-rounded">save</span><h2>Save map</h2></div><label>Map name<input id="planName" maxlength="80" autocomplete="off" placeholder="My Catalonia plan"></label><div class="dialog-actions"><button value="cancel">Cancel</button><button id="confirmSavePlan" value="default" class="primary-action">Save map</button></div></form></dialog>
+  <dialog id="planLibraryDialog" class="plan-dialog library-dialog"><form method="dialog"><div class="dialog-title"><span class="material-symbols-rounded">folder_open</span><h2>Saved maps</h2></div><div id="savedPlansList" class="saved-plans-list"></div><div class="dialog-actions"><button value="cancel">Close</button></div></form></dialog>
+
+  <script src="cat135/vendor/leaflet.js"></script>
+  <script src="cat135/app.js"></script>
+  <script src="cat135/reports.js"></script>
+</body>
+</html>
